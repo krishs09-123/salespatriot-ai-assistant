@@ -132,32 +132,59 @@ export const AIAssistant = () => {
                         <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
                       </div>
                       
-                      {/* Sources */}
-                      {message.sources && (
-                        <div className="mt-3 space-y-2">
-                          <p className="text-sm font-medium text-muted-foreground">Sources:</p>
-                          {message.sources.map((source, index) => (
-                            <Card key={index} className="bg-white border border-gray-200">
-                              <CardContent className="p-3">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="flex-1">
-                                    <p className="font-medium text-sm text-foreground">{source.title}</p>
-                                    <p className="text-xs text-muted-foreground mt-1">{source.section}</p>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="secondary" className="text-xs">
-                                      {source.confidence}% match
-                                    </Badge>
-                                    <Button variant="ghost" size="sm">
-                                      <ExternalLink className="h-3 w-3" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      )}
+                       {/* Source-Grounded Response Behavior */}
+                       {message.sources && (
+                         <div className="mt-4 space-y-3">
+                           <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                             <FileText className="h-4 w-4" />
+                             Sources Referenced:
+                           </p>
+                           {message.sources.map((source, index) => (
+                             <Card key={index} className="bg-white border border-gray-200">
+                               <CardContent className="p-4">
+                                 <div className="space-y-3">
+                                   {/* Source Header */}
+                                   <div className="flex items-start justify-between gap-3">
+                                     <div className="flex-1">
+                                       <p className="font-medium text-sm text-foreground">{source.title}</p>
+                                       <p className="text-xs text-muted-foreground mt-1">{source.section}</p>
+                                     </div>
+                                     <div className="flex items-center gap-2">
+                                       <Badge variant="secondary" className="text-xs">
+                                         {source.confidence}% match
+                                       </Badge>
+                                       <Button variant="ghost" size="sm">
+                                         <ExternalLink className="h-3 w-3" />
+                                       </Button>
+                                     </div>
+                                   </div>
+                                   
+                                   {/* Key Points Summary */}
+                                   <div className="bg-gray-50 rounded-lg p-3 border-l-2 border-blue-500">
+                                     <p className="text-xs font-medium text-foreground mb-2">Key Points Cited:</p>
+                                     <ul className="text-xs text-muted-foreground space-y-1">
+                                       <li>• Requirements alignment with federal standards (Section 3.2)</li>
+                                       <li>• Compliance with accessibility guidelines per Section 508</li>
+                                       <li>• Cost breakdown methodology following FAR 15.404-1</li>
+                                     </ul>
+                                   </div>
+                                   
+                                   {/* Section Explanation */}
+                                   <div className="bg-blue-50 rounded-lg p-3 border-l-2 border-blue-600">
+                                     <p className="text-xs font-medium text-blue-700 mb-2">Section Explanation:</p>
+                                     <p className="text-xs text-blue-600 leading-relaxed">
+                                       This section outlines mandatory technical requirements and evaluation criteria. 
+                                       The contracting officer will assess proposals based on technical merit (40%), 
+                                       past performance (30%), and cost realism (30%). Understanding these weightings 
+                                       is crucial for proposal positioning.
+                                     </p>
+                                   </div>
+                                 </div>
+                               </CardContent>
+                             </Card>
+                           ))}
+                         </div>
+                       )}
                       
                       {/* Message Actions */}
                       {message.type === 'assistant' && (
