@@ -7,8 +7,7 @@ import {
   MessageSquare, 
   Settings, 
   BarChart3,
-  CheckCircle2,
-  Search
+  CheckCircle2
 } from "lucide-react";
 
 interface SidebarProps {
@@ -22,7 +21,6 @@ const menuItems = [
   { id: "ai-assistant", label: "AI Assistant", icon: MessageSquare },
   { id: "proposals", label: "Proposals", icon: FileText },
   { id: "review", label: "Review & Approve", icon: CheckCircle2 },
-  { id: "search", label: "Search Bids", icon: Search },
 ];
 
 export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {

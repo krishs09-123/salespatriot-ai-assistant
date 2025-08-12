@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 217 91% 60%;
+    --primary: 224 76% 48%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 217 91% 60%;
+    --accent: 224 76% 48%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -37,10 +37,10 @@ All colors MUST be HSL.
     --ring: 217 91% 60%;
 
     /* Custom design tokens */
-    --primary-50: 217 91% 95%;
-    --primary-100: 217 91% 90%;
-    --primary-600: 217 91% 50%;
-    --primary-700: 217 91% 40%;
+    --primary-50: 224 76% 95%;
+    --primary-100: 224 76% 90%;
+    --primary-600: 224 76% 40%;
+    --primary-700: 224 76% 30%;
 
     --gray-50: 210 40% 98%;
     --gray-100: 210 40% 96%;
@@ -94,7 +94,7 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 224 76% 48%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -103,7 +103,7 @@ All colors MUST be HSL.
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217 91% 60%;
+    --accent: 224 76% 48%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
@@ -140,5 +140,9 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background-image: 
+      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 }

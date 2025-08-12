@@ -4,6 +4,7 @@ import { Dashboard } from "@/components/dashboard/Dashboard";
 import { DataIngestion } from "@/components/data/DataIngestion";
 import { AIAssistant } from "@/components/ai/AIAssistant";
 import { ReviewApprove } from "@/components/review/ReviewApprove";
+import { Proposals } from "@/components/proposals/Proposals";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -19,17 +20,7 @@ const Index = () => {
       case "review":
         return <ReviewApprove />;
       case "proposals":
-        return (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Proposals management coming soon...</p>
-          </div>
-        );
-      case "search":
-        return (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Advanced search coming soon...</p>
-          </div>
-        );
+        return <Proposals />;
       default:
         return <Dashboard />;
     }
