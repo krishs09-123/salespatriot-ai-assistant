@@ -30,7 +30,7 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
     <div className="w-64 h-screen bg-card border-r border-border flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-border">
-        <h1 className="text-xl font-bold text-foreground">ProposalAI</h1>
+        <h1 className="text-xl font-bold text-foreground">SalesPatriot</h1>
         <p className="text-sm text-muted-foreground mt-1">Government Contracting Assistant</p>
       </div>
 
