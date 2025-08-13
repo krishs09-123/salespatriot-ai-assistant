@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { RFQDocumentViewer } from "./RFQDocumentViewer";
 import { 
   Download, 
   RefreshCw, 
@@ -13,21 +14,23 @@ import {
   Calendar,
   DollarSign,
   MapPin,
-  Clock
+  Clock,
+  Eye
 } from "lucide-react";
 
 const mockBids = [
   {
-    id: "SAM-2024-001",
-    title: "IT Infrastructure Modernization Services",
-    agency: "Department of Defense",
-    description: "Comprehensive IT infrastructure upgrade and cloud migration services for military installations across the continental United States.",
-    postedDate: "2024-01-15",
-    dueDate: "2024-02-28",
-    estimatedValue: "$2.5M - $5M",
-    location: "Multiple States",
+    id: "SPE2DH-25-T-5234",
+    title: "Dental Floss, Unwaxed - Medical Supplies",
+    agency: "DLA Troop Support",
+    description: "Request for quotations for unwaxed dental floss, 200 yards, plastic polyamide (nylon). Quantity: 50 each. FDA regulated Class I device requiring specific marking and packaging requirements.",
+    postedDate: "2025-01-22",
+    dueDate: "2025-01-28",
+    estimatedValue: "$250 - $500",
+    location: "Philadelphia, PA",
     status: "Open",
-    category: "Information Technology"
+    category: "Medical Supplies",
+    hasDocument: true
   },
   {
     id: "SAM-2024-002", 
@@ -59,6 +62,7 @@ export const DataIngestion = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRFQ, setSelectedRFQ] = useState<string | null>(null);
   const { toast } = useToast();
 
   const filteredBids = mockBids.filter(bid => 
@@ -87,6 +91,10 @@ export const DataIngestion = () => {
       });
     }, 800);
   };
+
+  if (selectedRFQ) {
+    return <RFQDocumentViewer onBack={() => setSelectedRFQ(null)} />;
+  }
 
   return (
     <div className="space-y-6">
@@ -202,6 +210,16 @@ export const DataIngestion = () => {
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <Badge variant="outline">{bid.category}</Badge>
                 <div className="flex gap-2">
+                  {bid.hasDocument && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedRFQ(bid.id)}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      View RFQ
+                    </Button>
+                  )}
                   <Button variant="outline" size="sm">
                     <Download className="h-4 w-4 mr-2" />
                     Download
