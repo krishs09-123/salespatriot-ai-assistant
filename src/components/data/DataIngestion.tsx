@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { RFQDocumentViewer } from "./RFQDocumentViewer";
+import { useAppState } from "@/pages/Index";
 import { 
   Download, 
   RefreshCw, 
@@ -34,27 +35,27 @@ const mockBids = [
   },
   {
     id: "SAM-2024-002", 
-    title: "Cybersecurity Consulting and Implementation",
-    agency: "Department of Homeland Security",
-    description: "Zero-trust security architecture design and implementation for critical infrastructure protection systems.",
-    postedDate: "2024-01-20",
-    dueDate: "2024-03-15",
-    estimatedValue: "$1M - $3M",
-    location: "Washington, DC",
-    status: "Open",
-    category: "Cybersecurity"
+    title: "N/A",
+    agency: "N/A",
+    description: "N/A",
+    postedDate: "N/A",
+    dueDate: "N/A",
+    estimatedValue: "N/A",
+    location: "N/A",
+    status: "N/A",
+    category: "N/A"
   },
   {
     id: "SAM-2024-003",
-    title: "Data Analytics Platform Development",
-    agency: "Department of Health and Human Services",
-    description: "Development of advanced analytics platform for healthcare data processing and visualization to support public health initiatives.",
-    postedDate: "2024-01-22",
-    dueDate: "2024-03-30",
-    estimatedValue: "$500K - $1.5M",
-    location: "Remote",
-    status: "Open",
-    category: "Data Analytics"
+    title: "N/A",
+    agency: "N/A",
+    description: "N/A",
+    postedDate: "N/A",
+    dueDate: "N/A",
+    estimatedValue: "N/A",
+    location: "N/A",
+    status: "N/A",
+    category: "N/A"
   }
 ];
 
@@ -64,6 +65,7 @@ export const DataIngestion = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRFQ, setSelectedRFQ] = useState<string | null>(null);
   const { toast } = useToast();
+  const { scanned, setScanned } = useAppState();
 
   const filteredBids = mockBids.filter(bid => 
     bid.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,9 +83,10 @@ export const DataIngestion = () => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsScanning(false);
+          setScanned(true);
           toast({
             title: "Scan Complete",
-            description: `Found ${mockBids.length} new opportunities`,
+            description: `Found 3 new opportunities`,
           });
           return 100;
         }
@@ -150,8 +153,9 @@ export const DataIngestion = () => {
       </Card>
 
       {/* Opportunities List */}
-      <div className="grid gap-6">
-        {filteredBids.map((bid) => (
+      {scanned ? (
+        <div className="grid gap-6">
+          {filteredBids.map((bid) => (
           <Card key={bid.id} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -210,29 +214,44 @@ export const DataIngestion = () => {
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <Badge variant="outline">{bid.category}</Badge>
                 <div className="flex gap-2">
-                  {bid.hasDocument && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setSelectedRFQ(bid.id)}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      View RFQ
+                  {bid.id === "SPE2DH-25-T-5234" ? (
+                    <>
+                      {bid.hasDocument && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedRFQ(bid.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View RFQ
+                        </Button>
+                      )}
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                      <Button size="sm" className="bg-primary hover:bg-primary-600">
+                        Generate Proposal
+                      </Button>
+                    </>
+                  ) : (
+                    <Button variant="outline" size="sm" disabled>
+                      N/A
                     </Button>
                   )}
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
-                  <Button size="sm" className="bg-primary hover:bg-primary-600">
-                    Generate Proposal
-                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
-      </div>
+        </div>
+      ) : (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground">No opportunities found. Click "Scan SAM.gov" to search for new opportunities.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

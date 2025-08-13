@@ -18,9 +18,7 @@ interface SidebarProps {
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: BarChart3 },
   { id: "data-ingestion", label: "Data Ingestion", icon: Database },
-  { id: "ai-assistant", label: "AI Assistant", icon: MessageSquare },
   { id: "proposals", label: "Proposals", icon: FileText },
-  { id: "review", label: "Review & Approve", icon: CheckCircle2 },
 ];
 
 export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {

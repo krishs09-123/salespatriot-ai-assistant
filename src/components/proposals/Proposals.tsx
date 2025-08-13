@@ -3,46 +3,54 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { FileText, Clock, CheckCircle, AlertCircle, Plus, Eye } from "lucide-react";
+import { useAppState } from "@/pages/Index";
+import { ProposalEditor } from "./ProposalEditor";
 
-const mockProposals = [
-  {
-    id: "1",
-    title: "IT Infrastructure Modernization",
-    status: "in-progress",
-    deadline: "2024-01-15",
-    value: "$2.5M",
-    description: "Complete overhaul of legacy systems for Department of Defense",
-    progress: 65,
-  },
-  {
-    id: "2", 
-    title: "Cloud Migration Services",
-    status: "draft",
-    deadline: "2024-01-20",
-    value: "$1.8M",
-    description: "Migration of federal databases to secure cloud infrastructure",
-    progress: 30,
-  },
-  {
-    id: "3",
-    title: "Cybersecurity Assessment",
-    status: "submitted",
-    deadline: "2024-01-10",
-    value: "$950K",
-    description: "Comprehensive security audit for federal agencies",
-    progress: 100,
-  },
-];
+const getDentalFlossProposal = (status: 'all' | 'draft' | 'submitted') => {
+  if (status === 'all') {
+    return {
+      id: "SPE2DH-25-T-5234",
+      title: "Dental Floss, Unwaxed - Medical Supplies",
+      status: "all-proposals",
+      deadline: "2025-07-28",
+      value: "$250 - $500",
+      description: "Request for quotations for unwaxed dental floss, 200 yards, plastic polyamide (nylon)",
+      progress: 0,
+      rfqId: "SPE2DH-25-T-5234"
+    };
+  } else if (status === 'draft') {
+    return {
+      id: "SPE2DH-25-T-5234",
+      title: "Dental Floss, Unwaxed - Medical Supplies",
+      status: "draft",
+      deadline: "2025-07-28",
+      value: "$250 - $500",
+      description: "AI-generated proposal for unwaxed dental floss procurement",
+      progress: 60,
+    };
+  } else {
+    return {
+      id: "SPE2DH-25-T-5234",
+      title: "Dental Floss, Unwaxed - Medical Supplies",
+      status: "submitted",
+      deadline: "2025-07-28",
+      value: "$250 - $500",
+      description: "Final proposal submitted for unwaxed dental floss procurement",
+      progress: 100,
+    };
+  }
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
     case "draft":
-      return "bg-gray-100 text-gray-700";
-    case "in-progress":
       return "bg-yellow-100 text-yellow-700";
     case "submitted":
       return "bg-green-100 text-green-700";
+    case "all-proposals":
+      return "bg-blue-100 text-blue-700";
     default:
       return "bg-gray-100 text-gray-700";
   }
@@ -52,10 +60,10 @@ const getStatusIcon = (status: string) => {
   switch (status) {
     case "draft":
       return <FileText className="h-4 w-4" />;
-    case "in-progress":
-      return <Clock className="h-4 w-4" />;
     case "submitted":
       return <CheckCircle className="h-4 w-4" />;
+    case "all-proposals":
+      return <Eye className="h-4 w-4" />;
     default:
       return <AlertCircle className="h-4 w-4" />;
   }
@@ -63,11 +71,33 @@ const getStatusIcon = (status: string) => {
 
 export const Proposals = () => {
   const [activeTab, setActiveTab] = useState("all");
+  const [viewingProposal, setViewingProposal] = useState(false);
+  const { scanned, proposalGenerated, proposalStatus, setProposalGenerated, setProposalStatus } = useAppState();
 
-  const filteredProposals = mockProposals.filter(proposal => {
-    if (activeTab === "all") return true;
-    return proposal.status === activeTab;
-  });
+  const handleGenerateProposal = () => {
+    setProposalGenerated(true);
+    setProposalStatus('draft');
+  };
+
+  const getProposals = () => {
+    if (!scanned) return [];
+    
+    if (activeTab === "all" && !proposalGenerated) {
+      return [getDentalFlossProposal('all')];
+    } else if (activeTab === "draft" && proposalGenerated && proposalStatus === 'draft') {
+      return [getDentalFlossProposal('draft')];
+    } else if (activeTab === "submitted" && proposalGenerated && proposalStatus === 'submitted') {
+      return [getDentalFlossProposal('submitted')];
+    }
+    
+    return [];
+  };
+
+  const proposals = getProposals();
+
+  if (viewingProposal) {
+    return <ProposalEditor onBack={() => setViewingProposal(false)} />;
+  }
 
   return (
     <div className="space-y-6">
@@ -85,171 +115,155 @@ export const Proposals = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="all">All Proposals</TabsTrigger>
           <TabsTrigger value="draft">Drafts</TabsTrigger>
-          <TabsTrigger value="in-progress">In Progress</TabsTrigger>
           <TabsTrigger value="submitted">Submitted</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          <div className="grid gap-4">
-            {filteredProposals.map((proposal) => (
-              <Card key={proposal.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-xl">{proposal.title}</CardTitle>
-                      <CardDescription>{proposal.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className={getStatusColor(proposal.status)}>
-                        {getStatusIcon(proposal.status)}
-                        <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
-                      <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
-                      <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>Progress: {proposal.progress}%</span>
-                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary transition-all duration-300"
-                          style={{ width: `${proposal.progress}%` }}
-                        />
+          {proposals.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">
+                  {!scanned ? "No opportunities scanned yet. Go to Data Ingestion to scan SAM.gov for opportunities." : "No proposals available."}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {proposals.map((proposal) => (
+                <Card key={proposal.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <CardTitle className="text-xl">{proposal.title}</CardTitle>
+                        <CardDescription>{proposal.description}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className={getStatusColor(proposal.status)}>
+                          {getStatusIcon(proposal.status)}
+                          <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                      <div className="flex items-center gap-4">
+                        <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
+                        <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span>Progress: {proposal.progress}%</span>
+                        <Progress value={proposal.progress} className="w-16 h-2" />
+                      </div>
+                    </div>
+                    {proposal.status === 'all-proposals' && (
+                      <div className="flex justify-end">
+                        <Button onClick={handleGenerateProposal} size="sm">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Generate Proposal
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="draft" className="space-y-4">
-          <div className="grid gap-4">
-            {filteredProposals.map((proposal) => (
-              <Card key={proposal.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-xl">{proposal.title}</CardTitle>
-                      <CardDescription>{proposal.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className={getStatusColor(proposal.status)}>
-                        {getStatusIcon(proposal.status)}
-                        <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
-                      <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
-                      <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>Progress: {proposal.progress}%</span>
-                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary transition-all duration-300"
-                          style={{ width: `${proposal.progress}%` }}
-                        />
+          {proposals.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">No draft proposals available.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {proposals.map((proposal) => (
+                <Card key={proposal.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setViewingProposal(true)}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <CardTitle className="text-xl">{proposal.title}</CardTitle>
+                        <CardDescription>{proposal.description}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className={getStatusColor(proposal.status)}>
+                          {getStatusIcon(proposal.status)}
+                          <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="in-progress" className="space-y-4">
-          <div className="grid gap-4">
-            {filteredProposals.map((proposal) => (
-              <Card key={proposal.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-xl">{proposal.title}</CardTitle>
-                      <CardDescription>{proposal.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className={getStatusColor(proposal.status)}>
-                        {getStatusIcon(proposal.status)}
-                        <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
-                      <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
-                      <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>Progress: {proposal.progress}%</span>
-                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary transition-all duration-300"
-                          style={{ width: `${proposal.progress}%` }}
-                        />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                      <div className="flex items-center gap-4">
+                        <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
+                        <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span>Progress: {proposal.progress}%</span>
+                        <Progress value={proposal.progress} className="w-16 h-2" />
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="flex justify-end">
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4 mr-2" />
+                        Review & Edit
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="submitted" className="space-y-4">
-          <div className="grid gap-4">
-            {filteredProposals.map((proposal) => (
-              <Card key={proposal.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-xl">{proposal.title}</CardTitle>
-                      <CardDescription>{proposal.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className={getStatusColor(proposal.status)}>
-                        {getStatusIcon(proposal.status)}
-                        <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
-                      <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
-                      <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>Progress: {proposal.progress}%</span>
-                      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary transition-all duration-300"
-                          style={{ width: `${proposal.progress}%` }}
-                        />
+          {proposals.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">No submitted proposals yet.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {proposals.map((proposal) => (
+                <Card key={proposal.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <CardTitle className="text-xl">{proposal.title}</CardTitle>
+                        <CardDescription>{proposal.description}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className={getStatusColor(proposal.status)}>
+                          {getStatusIcon(proposal.status)}
+                          <span className="ml-1 capitalize">{proposal.status.replace('-', ' ')}</span>
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center gap-4">
+                        <span>Value: <span className="font-medium text-foreground">{proposal.value}</span></span>
+                        <span>Deadline: <span className="font-medium text-foreground">{proposal.deadline}</span></span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span>Progress: {proposal.progress}%</span>
+                        <Progress value={proposal.progress} className="w-16 h-2" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

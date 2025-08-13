@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DashboardStats } from "./DashboardStats";
+import { useAppState } from "@/pages/Index";
 import { 
   TrendingUp, 
   FileText, 
@@ -14,36 +16,6 @@ import {
   DollarSign
 } from "lucide-react";
 
-const stats = [
-  {
-    title: "Active Opportunities",
-    value: "12",
-    change: "+3 this week",
-    icon: Database,
-    color: "text-blue-600"
-  },
-  {
-    title: "Proposals Generated",
-    value: "8",
-    change: "+2 this week",
-    icon: FileText,
-    color: "text-green-600"
-  },
-  {
-    title: "In Review",
-    value: "3",
-    change: "2 pending approval",
-    icon: Clock,
-    color: "text-yellow-600"
-  },
-  {
-    title: "Win Rate",
-    value: "68%",
-    change: "+5% vs last quarter",
-    icon: TrendingUp,
-    color: "text-purple-600"
-  }
-];
 
 const recentActivity = [
   {
@@ -97,6 +69,36 @@ const upcomingDeadlines = [
 ];
 
 export const Dashboard = () => {
+  const { scanned, proposalGenerated } = useAppState();
+
+  const getRecentActivity = () => {
+    const activities = [];
+    
+    if (scanned) {
+      activities.push({
+        id: 1,
+        action: "New opportunities discovered",
+        title: "Dental Floss (Active) + 2 N/A",
+        agency: "DLA Troop Support",
+        timestamp: "Recently scanned",
+        status: "new"
+      });
+    }
+
+    if (proposalGenerated) {
+      activities.push({
+        id: 2,
+        action: "Proposal generated",
+        title: "Dental Floss, Unwaxed - Medical Supplies",
+        agency: "DLA Troop Support",
+        timestamp: "AI generated",
+        status: "draft"
+      });
+    }
+
+    return activities;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -106,25 +108,7 @@ export const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <Icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <DashboardStats />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
@@ -138,23 +122,27 @@ export const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className={`w-2 h-2 rounded-full mt-2 ${
-                    activity.status === 'new' ? 'bg-blue-500' :
-                    activity.status === 'submitted' ? 'bg-yellow-500' :
-                    'bg-green-500'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">{activity.action}</p>
-                    <p className="text-sm text-muted-foreground truncate">{activity.title}</p>
-                    <p className="text-xs text-muted-foreground">{activity.agency} • {activity.timestamp}</p>
+              {getRecentActivity().length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No recent activity. Start by scanning SAM.gov for opportunities.</p>
+              ) : (
+                getRecentActivity().map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className={`w-2 h-2 rounded-full mt-2 ${
+                      activity.status === 'new' ? 'bg-blue-500' :
+                      activity.status === 'draft' ? 'bg-yellow-500' :
+                      'bg-green-500'
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                      <p className="text-sm text-muted-foreground truncate">{activity.title}</p>
+                      <p className="text-xs text-muted-foreground">{activity.agency} • {activity.timestamp}</p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {activity.status}
+                    </Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    {activity.status}
-                  </Badge>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
