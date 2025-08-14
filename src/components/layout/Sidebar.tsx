@@ -26,8 +26,17 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
     <div className="w-64 h-screen bg-card border-r border-border flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-border">
-        <h1 className="text-xl font-bold text-foreground">SalesPatriot</h1>
-        <p className="text-sm text-muted-foreground mt-1">Government Contracting Assistant</p>
+        <div className="flex items-center gap-3">
+          <img 
+            src="/lovable-uploads/9b61ad7d-0778-48f5-82a6-8e12a3a87579.png" 
+            alt="SalesPatriot Logo" 
+            className="w-8 h-8"
+          />
+          <div>
+            <h1 className="text-xl font-bold text-foreground">SalesPatriot</h1>
+            <p className="text-sm text-muted-foreground mt-1">Government Contracting Assistant</p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation */}
