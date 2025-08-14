@@ -226,12 +226,13 @@ export const DataIngestion = () => {
                           View RFQ
                         </Button>
                       )}
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
-                      <Button size="sm" className="bg-primary hover:bg-primary-600">
-                        Generate Proposal
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setSelectedRFQ(bid.id)}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Original
                       </Button>
                     </>
                   ) : (

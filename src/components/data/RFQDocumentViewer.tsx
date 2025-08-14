@@ -88,8 +88,8 @@ export const RFQDocumentViewer = ({ onBack }: RFQDocumentViewerProps) => {
           <p className="text-muted-foreground">Request for Quotations - {rfqData.requestNumber}</p>
         </div>
         <Button className="bg-primary hover:bg-primary-600">
-          <Download className="h-4 w-4 mr-2" />
-          Download PDF
+          <FileText className="h-4 w-4 mr-2" />
+          View Original
         </Button>
       </div>
 
@@ -270,9 +270,6 @@ export const RFQDocumentViewer = ({ onBack }: RFQDocumentViewerProps) => {
               <CardTitle>Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full bg-primary hover:bg-primary-600">
-                Generate Proposal
-              </Button>
               <Button variant="outline" className="w-full">
                 Save for Later
               </Button>

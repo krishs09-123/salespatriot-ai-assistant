@@ -44,29 +44,33 @@ const recentActivity = [
   }
 ];
 
-const upcomingDeadlines = [
-  {
-    title: "Cloud Migration Services",
-    agency: "GSA",
-    dueDate: "2024-02-15",
-    daysLeft: 8,
-    status: "in-progress"
-  },
-  {
-    title: "Security Assessment",
-    agency: "DHS", 
-    dueDate: "2024-02-20",
-    daysLeft: 13,
-    status: "draft"
-  },
-  {
-    title: "System Integration",
-    agency: "DoD",
-    dueDate: "2024-02-28",
-    daysLeft: 21,
-    status: "planning"
-  }
-];
+const getUpcomingDeadlines = (scanned: boolean) => {
+  if (!scanned) return [];
+  
+  return [
+    {
+      title: "Dental Floss, Unwaxed - Medical Supplies",
+      agency: "DLA Troop Support",
+      dueDate: "2025-07-28",
+      daysLeft: 6,
+      status: "active"
+    },
+    {
+      title: "N/A",
+      agency: "N/A",
+      dueDate: "N/A",
+      daysLeft: "N/A",
+      status: "N/A"
+    },
+    {
+      title: "N/A",
+      agency: "N/A",
+      dueDate: "N/A",
+      daysLeft: "N/A",
+      status: "N/A"
+    }
+  ];
+};
 
 export const Dashboard = () => {
   const { scanned, proposalGenerated } = useAppState();
@@ -158,29 +162,37 @@ export const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingDeadlines.map((deadline, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{deadline.title}</p>
-                      <p className="text-xs text-muted-foreground">{deadline.agency}</p>
+              {getUpcomingDeadlines(scanned).length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No deadlines. Scan SAM.gov to find opportunities.</p>
+              ) : (
+                getUpcomingDeadlines(scanned).map((deadline, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-foreground">{deadline.title}</p>
+                        <p className="text-xs text-muted-foreground">{deadline.agency}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-foreground">
+                          {deadline.daysLeft === "N/A" ? "N/A" : `${deadline.daysLeft} days`}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {deadline.dueDate === "N/A" ? "N/A" : new Date(deadline.dueDate).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-foreground">{deadline.daysLeft} days</p>
-                      <p className="text-xs text-muted-foreground">{new Date(deadline.dueDate).toLocaleDateString()}</p>
+                    <div className="flex items-center gap-2">
+                      <Progress 
+                        value={deadline.status === 'active' ? 85 : 0} 
+                        className="flex-1 h-2" 
+                      />
+                      <Badge variant="outline" className="text-xs">
+                        {deadline.status}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Progress 
-                      value={deadline.status === 'planning' ? 20 : deadline.status === 'draft' ? 60 : 85} 
-                      className="flex-1 h-2" 
-                    />
-                    <Badge variant="outline" className="text-xs">
-                      {deadline.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -200,10 +212,10 @@ export const Dashboard = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Total Value Pursued</span>
-                <span className="text-lg font-bold text-foreground">$12.5M</span>
+                <span className="text-lg font-bold text-foreground">N/A</span>
               </div>
-              <Progress value={75} className="h-2" />
-              <p className="text-xs text-muted-foreground">75% of quarterly target</p>
+              <Progress value={0} className="h-2" />
+              <p className="text-xs text-muted-foreground">No data available</p>
             </div>
             
             <div className="space-y-2">
@@ -211,11 +223,11 @@ export const Dashboard = () => {
                 <span className="text-sm text-muted-foreground">Proposals Won</span>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  <span className="text-lg font-bold text-foreground">5/8</span>
+                  <span className="text-lg font-bold text-foreground">N/A</span>
                 </div>
               </div>
-              <Progress value={62.5} className="h-2" />
-              <p className="text-xs text-muted-foreground">62.5% win rate this quarter</p>
+              <Progress value={0} className="h-2" />
+              <p className="text-xs text-muted-foreground">No data available</p>
             </div>
             
             <div className="space-y-2">
@@ -223,11 +235,11 @@ export const Dashboard = () => {
                 <span className="text-sm text-muted-foreground">Average Score</span>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <span className="text-lg font-bold text-foreground">8.6/10</span>
+                  <span className="text-lg font-bold text-foreground">N/A</span>
                 </div>
               </div>
-              <Progress value={86} className="h-2" />
-              <p className="text-xs text-muted-foreground">+0.4 from last quarter</p>
+              <Progress value={0} className="h-2" />
+              <p className="text-xs text-muted-foreground">No data available</p>
             </div>
           </div>
         </CardContent>

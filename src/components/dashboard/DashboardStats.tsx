@@ -46,7 +46,7 @@ export const DashboardStats = () => {
     },
     {
       title: "Win Rate",
-      value: "68%",
+      value: "N/A%",
       change: "Historical average",
       icon: TrendingUp,
       color: "text-purple-600"
