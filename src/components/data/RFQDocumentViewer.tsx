@@ -264,20 +264,6 @@ export const RFQDocumentViewer = ({ onBack }: RFQDocumentViewerProps) => {
             </CardContent>
           </Card>
 
-          {/* Action Items */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full">
-                Save for Later
-              </Button>
-              <Button variant="outline" className="w-full">
-                Add to Watchlist
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

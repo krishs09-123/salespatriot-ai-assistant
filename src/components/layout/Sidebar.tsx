@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeSettings } from "@/components/ui/theme-settings";
 import { 
   Database, 
   FileText, 
   MessageSquare, 
   Settings, 
   BarChart3,
-  CheckCircle2
+  CheckCircle2,
+  Building
 } from "lucide-react";
 
 interface SidebarProps {
@@ -65,11 +67,17 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
-        <Button variant="ghost" className="w-full justify-start gap-3 h-11">
-          <Settings className="h-4 w-4" />
-          Settings
-        </Button>
+      <div className="p-4 border-t border-border space-y-2">
+        <ThemeSettings>
+          <Button variant="ghost" className="w-full justify-start gap-3 h-11">
+            <Settings className="h-4 w-4" />
+            Settings
+          </Button>
+        </ThemeSettings>
+        <div className="flex items-center gap-3 px-3 py-2 text-muted-foreground">
+          <Building className="h-4 w-4" />
+          <span className="text-sm">Example Company</span>
+        </div>
       </div>
     </div>
   );

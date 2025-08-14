@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { RFQDocumentViewer } from "./RFQDocumentViewer";
+import { OriginalDocumentViewer } from "./OriginalDocumentViewer";
 import { useAppState } from "@/pages/Index";
 import { 
   Download, 
@@ -64,6 +65,7 @@ export const DataIngestion = () => {
   const [progress, setProgress] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRFQ, setSelectedRFQ] = useState<string | null>(null);
+  const [viewOriginal, setViewOriginal] = useState(false);
   const { toast } = useToast();
   const { scanned, setScanned } = useAppState();
 
@@ -94,6 +96,10 @@ export const DataIngestion = () => {
       });
     }, 800);
   };
+
+  if (selectedRFQ && viewOriginal) {
+    return <OriginalDocumentViewer onBack={() => { setSelectedRFQ(null); setViewOriginal(false); }} />;
+  }
 
   if (selectedRFQ) {
     return <RFQDocumentViewer onBack={() => setSelectedRFQ(null)} />;
@@ -168,10 +174,20 @@ export const DataIngestion = () => {
                     {bid.agency} • {bid.id}
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  View Original
-                </Button>
+                {bid.id === "SPE2DH-25-T-5234" ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => { setSelectedRFQ(bid.id); setViewOriginal(true); }}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View Original
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" disabled>
+                    N/A
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -213,34 +229,20 @@ export const DataIngestion = () => {
 
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <Badge variant="outline">{bid.category}</Badge>
-                <div className="flex gap-2">
-                  {bid.id === "SPE2DH-25-T-5234" ? (
-                    <>
-                      {bid.hasDocument && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedRFQ(bid.id)}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View RFQ
-                        </Button>
-                      )}
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setSelectedRFQ(bid.id)}
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        View Original
-                      </Button>
-                    </>
-                  ) : (
-                    <Button variant="outline" size="sm" disabled>
-                      N/A
-                    </Button>
-                  )}
-                </div>
+                {bid.id === "SPE2DH-25-T-5234" ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => { setSelectedRFQ(bid.id); setViewOriginal(true); }}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View Original
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" disabled>
+                    N/A
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
