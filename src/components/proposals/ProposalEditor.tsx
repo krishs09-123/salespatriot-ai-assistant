@@ -36,7 +36,13 @@ const mockProposal = {
       content: "Our company is pleased to submit this proposal for the procurement of unwaxed dental floss meeting all FDA Class I medical device requirements. With over 15 years of experience in medical supply distribution, we are uniquely positioned to fulfill this requirement while ensuring full compliance with Berry Amendment restrictions and Buy American Act provisions.",
       status: "approved",
       aiGenerated: true,
-      issues: []
+      issues: [],
+      sources: [
+        "RFQ Document Section A - Solicitation Requirements",
+        "FDA Regulation 872.6390 Class I Device Standards",
+        "Berry Amendment Compliance Guidelines",
+        "Buy American Act Provisions (DFARS 252.225-7001)"
+      ]
     },
     {
       id: "technical-approach",
@@ -44,7 +50,15 @@ const mockProposal = {
       content: "We will supply premium quality unwaxed dental floss manufactured from plastic polyamide (nylon) material, precisely meeting the 200-yard specification. Our product exceeds FDA Class I device standards and includes comprehensive labeling per Medical Marking Standard No. 1. Each unit will be individually packaged in sealed containers to prevent contamination and ensure product integrity during international shipping to Germany.",
       status: "flagged",
       aiGenerated: true,
-      issues: ["Need to specify exact manufacturer details", "Include quality control procedures"]
+      issues: ["Need to specify exact manufacturer details", "Include quality control procedures"],
+      sources: [
+        "RFQ Section B - Item Description (NSN 6520016772830)",
+        "Technical Requirements RA001, RD003, RP001",
+        "Medical Marking Standard No. 1",
+        "FDA Class I Device Requirements (872.6390)",
+        "International Shipping Requirements (Germany)",
+        "MIL-STD-2073-1E Packaging Standards"
+      ]
     },
     {
       id: "compliance",
@@ -52,7 +66,15 @@ const mockProposal = {
       content: "Our dental floss products are fully compliant with all applicable regulations including FDA 872.6390 Class I requirements, domestic sourcing under the Berry Amendment, and Buy American Act provisions. We maintain current FDA registration and listing, implement strict GMP protocols, and ensure all marking requirements per MMS No. 1 are met.",
       status: "draft",
       aiGenerated: true,
-      issues: []
+      issues: [],
+      sources: [
+        "FDA 21 CFR 872.6390 Class I Medical Device Regulations",
+        "Berry Amendment (DFARS 252.225-7012)",
+        "Buy American Act (DFARS 252.225-7001)",
+        "Good Manufacturing Practice (GMP) Requirements",
+        "Medical Marking Standard No. 1 Compliance",
+        "FDA Registration and Listing Requirements"
+      ]
     },
     {
       id: "pricing",
@@ -60,7 +82,15 @@ const mockProposal = {
       content: "Unit Price: $4.95 per each\nTotal Price: $247.50 for 50 units\nDelivery: 75 days ARO (within required 81-day timeframe)\nShipping: FOB Destination to Kaiserslautern, Germany\nPayment Terms: Net 30 days",
       status: "draft",
       aiGenerated: true,
-      issues: []
+      issues: [],
+      sources: [
+        "Historical Procurement Data (Contract Awards 2024-2025)",
+        "Market Analysis ($5.00-$6.99 price range)",
+        "RFQ Delivery Requirements (81 Days ADO)",
+        "Shipping Address: Kaiserslautern, Germany",
+        "FOB Destination Terms",
+        "Standard Government Payment Terms"
+      ]
     }
   ]
 };
@@ -348,6 +378,27 @@ export const ProposalEditor = ({ onBack }: ProposalEditorProps) => {
                     </pre>
                   </div>
                 </ScrollArea>
+              )}
+
+              {/* AI Sources Section */}
+              {selectedSection.aiGenerated && selectedSection.sources && (
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="font-medium text-blue-800 text-sm mb-3 flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    AI Source Citations
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedSection.sources.map((source, index) => (
+                      <div key={index} className="flex items-start gap-2 text-sm">
+                        <span className="text-blue-600 font-mono">[{index + 1}]</span>
+                        <span className="text-blue-700">{source}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-blue-600 mt-3 italic">
+                    These sources were analyzed by AI to generate the above content. Review for accuracy and completeness.
+                  </p>
+                </div>
               )}
             </CardContent>
           </Card>
